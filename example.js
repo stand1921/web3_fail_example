@@ -10,7 +10,7 @@ if (typeof web3 !== 'undefined') {
 
 // send transaction 之后，若成功
 // 结果会返回一个交易的地址，记住或保存在合约 event 里
-let txHash = '0xbfe47531007041c61c921589c2c8defc74ab116706f5e6b11acdc06473269ee8'
+let txHash = '0x44ca19caa94c1c0b352b0234d6de2574d02fc2558974152b2c5e410f29e864d2'
 
 // 检查交易 pending 成功
 let tx = web3.eth.getTransaction(txHash, (err, result) => {
@@ -35,7 +35,14 @@ let receipt = web3.eth.getTransactionReceipt(txHash, (err, result) => {
   if (!err) {
     if (result != null) {
       // 交易执行过
-      console.log(err, result)
+      if (result.status === '0x1') {
+        console.log("交易执行成功，未发生异常或 gas 耗尽")
+      } else if (result.status === '0x0') {
+        console.log("交易执行完成，但发生异常或 gas 耗尽")
+      } else {
+        console.log("该块中的交易还不支持status字段，可能执行可能成功也可能失败。" +
+            "geth返回时不包含此字段，parity返回时此字段值可能为null")
+      }
     } else {
       // 该交易未被执行，但可能已经被提交
       console.log("this transaction not mined", result)
